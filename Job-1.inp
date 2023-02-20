@@ -1,0 +1,7 @@
+** Example of one 2D pin-jointed bar element Abaqus mesh
+**
+*Node
+      1,           0.,           0.
+      2,           1.,           1.
+*Element, type=T2D2
+ 1,   1,   2
