@@ -6,6 +6,7 @@
 # with force only along the bar
 # This element cannot carry torque
 # It is constituted by two nodes: node1 and node2
+# Notation T2D2 used in Abaqus
 
 import numpy as np
 from node2d import Node2D
@@ -25,8 +26,14 @@ class Truss2D2:
 		self.coords2 = self.node2.coords 
 		self.length = np.linalg.norm(self.coords1-self.coords2)
 		if (self.length == 0):
-			print("Warning: zero length Truss2D2 element.")
+			print("Error: zero length Truss2D2 element.")
+			exit
 		
+	# Ke = 4x4 element stiffness matrix with rows/cols ordered as follows:
+	# 1 - node 1, x DOF
+	# 2 - node 1, y DOF
+	# 3 - node 2, x DOF
+	# 4 - node 2, y DOF
 	def calculate_stiffness_matrix(self): # 4x4 stiffness matrix
 		c = (self.node2.x - self.node1.x) / self.length
 		s = (self.node2.y - self.node1.y) / self.length
