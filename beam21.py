@@ -16,6 +16,7 @@ class Beam21:
 	def __init__(self,node1,node2,cross_section,young_modulus,moment_of_area):
 		self.node1 = node1
 		self.node2 = node2
+		self.dofs_per_node = 3
 		self.calculate_length()
 		self.cross_section = cross_section # cross sectional area
 		self.young_modulus = young_modulus # Young's modulus

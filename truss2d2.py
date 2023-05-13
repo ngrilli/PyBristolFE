@@ -7,6 +7,7 @@
 # This element cannot carry torque
 # It is constituted by two nodes: node1 and node2
 # Notation T2D2 used in Abaqus
+# Also called pin-jointed bar
 
 import numpy as np
 from node2d import Node2D
@@ -16,6 +17,7 @@ class Truss2D2:
 	def __init__(self,node1,node2,cross_section,young_modulus):
 		self.node1 = node1
 		self.node2 = node2
+		self.dofs_per_node = 2
 		self.calculate_length()
 		self.cross_section = cross_section # cross sectional area
 		self.young_modulus = young_modulus # Young's modulus

@@ -4,8 +4,6 @@
 
 # A 2D node
 
-#import numpy as np
-
 class Node2D:
 
 	def __init__(self,index,coords):
