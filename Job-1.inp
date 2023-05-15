@@ -4,6 +4,6 @@
       1,           0.,           0.
       2,           1.,           0.
       3,           2.,           0.
-*Element, type=T2D2
+*Element, type=B21
  1,   1,   2
  2,   2,   3

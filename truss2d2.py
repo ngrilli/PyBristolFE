@@ -10,17 +10,19 @@
 # Also called pin-jointed bar
 
 import numpy as np
+from element import Element
 from node2d import Node2D
+from material import Material
 
-class Truss2D2:
+class Truss2D2(Element):
 	
-	def __init__(self,node1,node2,cross_section,young_modulus):
-		self.node1 = node1
-		self.node2 = node2
-		self.dofs_per_node = 2
+	def __init__(self,nodes,material,cross_section):
+		super().__init__(2,2)
+		self.node1 = nodes[0]
+		self.node2 = nodes[1]
 		self.calculate_length()
+		self.young_modulus = material.young_modulus # Young's modulus
 		self.cross_section = cross_section # cross sectional area
-		self.young_modulus = young_modulus # Young's modulus
 		self.calculate_stiffness_matrix()
 		
 	def calculate_length(self):
