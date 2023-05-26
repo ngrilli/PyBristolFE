@@ -16,6 +16,7 @@ class FEProblem:
 		self.problem_type = problem_type
 		self.mesh = mesh
 		self.material = material
+		self.BC # boundary conditions object
 		self.beam_cross_section = beam_cross_section
 		self.moment_of_area = moment_of_area
 		self.dimensions = dimensions
