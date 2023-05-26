@@ -10,6 +10,7 @@ class BoundaryConditions:
 	
 	# data structure is a matrix with 3 columns for each line, the 3 columns mean:
 	# node number, degree of freedom, magnitude
+	# zero index notation is used
 	def __init__(self):
 		self.DirichletBC = np.zeros(shape=(0,3))
 		self.NeumannBC = np.zeros(shape=(0,3))
