@@ -9,6 +9,8 @@ from node2d import Node2D
 from truss2d2 import Truss2D2
 from feproblem import FEProblem
 from material import Material
+from abaqusparser import AbaqusParser
+from boundaryconditions import BoundaryConditions
 import numpy as np
 
 from beam21 import Beam21
@@ -17,13 +19,20 @@ mesh = meshio.read("Job-1.inp")
 
 steel = Material(200e3,0.3)
 
-fe = FEProblem('Beam21',mesh,steel,'None')
+bc = BoundaryConditions()
+
+fe = FEProblem('Beam21',mesh,steel,bc)
 
 fe.calculate_number_of_nodes()
 fe.find_element_type()
 fe.calculate_number_of_elements()
 fe.calculate_number_of_dofs_per_node()
 fe.calculate_global_stiffness_matrix()
+
+abaqus_input_file = AbaqusParser('Job-1.inp',bc)
+abaqus_input_file.ReadBC()
+
+fe.apply_BC()
 
 print(np.matrix(fe.K))
 
@@ -39,9 +48,26 @@ print(nodo1.coords)
 print(nodo2.coords)
 print(nodo3.coords)
 
+print('\n')
+print('\n')
+print('\n')
+
 elem1 = Beam21([nodo1,nodo2],steel,1,1)
 elem2 = Beam21([nodo2,nodo3],steel,1,1)
 
 print(elem1.stiffness_matrix)
 
+print('\n')
+print('\n')
+print('\n')
 
+print(bc.DirichletBC)
+print(bc.NeumannBC)
+
+print('\n')
+print('\n')
+print('\n')
+
+print(fe.force_vector)
+
+print(np.matmul(np.linalg.inv(fe.K), fe.force_vector))

@@ -5,7 +5,6 @@
 # A finite element problem
 
 import numpy as np
-from material import Material
 from node2d import Node2D
 from truss2d2 import Truss2D2
 from beam21 import Beam21
@@ -16,7 +15,7 @@ class FEProblem:
 		self.problem_type = problem_type
 		self.mesh = mesh
 		self.material = material
-		self.BC # boundary conditions object
+		self.BC = BC # boundary conditions object
 		self.beam_cross_section = beam_cross_section
 		self.moment_of_area = moment_of_area
 		self.dimensions = dimensions
@@ -79,22 +78,17 @@ class FEProblem:
 					self.K[ii,jj] += Ke[i+elem.dofs_per_node,j+elem.dofs_per_node]
 
 	# apply boundary conditions
-	# a BC is a matrix with 8 or 12 columns for Truss2D2 or Beam21
-	# 1st column = value of force_x on node
-	# 2nd column = is force_x defined on this node (1 = True, 0 = False)
-	# 3rd column = value of force_y on node
-	# 4th column = is force_y defined on this node (1 = True, 0 = False)
-	# 5th column = value of displacement_x on node
-	# 6th column = is displacement_x defined on this node (1 = True, 0 = False)
-	# 7th column = value of displacement_y on node
-	# 8th column = is displacement_y defined on this node (1 = True, 0 = False)
-	# 9th column = value of torque defined on node
-	# 10th column = is torque defined on this nodes (1 = True, 0 = False)
-	# 11th column = value of rotation defined on node
-	# 12th column = is rotation defined on this node (1 = True, 0 = False)
 	def apply_BC(self):
-		# split stiffness matrix into known/unknown submatrices
-		return 1
-		
+		# define force vector
+		self.force_vector = np.zeros(shape=(self.dofs_per_node * self.number_of_nodes))
+		for i in range(self.BC.NeumannBC.shape[0]): # cycle over Neumann BC
+			self.force_vector[int(self.BC.NeumannBC[i,0] * self.dofs_per_node + self.BC.NeumannBC[i,1])] = self.BC.NeumannBC[i,2] 
+		# Dirichlet BC: modify global stiffness matrix
+		for i in range(self.BC.DirichletBC.shape[0]): # cycle over Dirichlet BC
+			matrix_line_to_modify = int(self.BC.DirichletBC[i,0] * self.dofs_per_node + self.BC.DirichletBC[i,1])
+			self.K[matrix_line_to_modify,:] = 0.0
+			self.K[matrix_line_to_modify,matrix_line_to_modify] = 1.0
+			self.force_vector[matrix_line_to_modify] = self.BC.DirichletBC[i,2]
+
 	def solve(self):
 		return 1

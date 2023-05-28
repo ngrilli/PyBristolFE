@@ -16,7 +16,7 @@ class BoundaryConditions:
 		self.NeumannBC = np.zeros(shape=(0,3))
 		
 	def addDirichletBC(self,newBC):
-		self.DirichletBC = np.vstack(self.DirichletBC, newBC)
+		self.DirichletBC = np.vstack((self.DirichletBC,newBC))
 
 	def addNeumannBC(self,newBC):
-		self.NeumannBC = np.vstack(self.NeumannBC, newBC)
+		self.NeumannBC = np.vstack((self.NeumannBC,newBC))
