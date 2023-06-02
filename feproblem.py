@@ -91,4 +91,4 @@ class FEProblem:
 			self.force_vector[matrix_line_to_modify] = self.BC.DirichletBC[i,2]
 
 	def solve(self):
-		return 1
+		return np.matmul(np.linalg.inv(self.K), self.force_vector)

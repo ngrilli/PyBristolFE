@@ -4,6 +4,10 @@
 
 # A teaching FE code for linear elasticity
 
+# Requirements: python 3
+# pip install meshio
+# pip install netCDF4
+
 import meshio
 from node2d import Node2D
 from truss2d2 import Truss2D2
@@ -70,4 +74,18 @@ print('\n')
 
 print(fe.force_vector)
 
-print(np.matmul(np.linalg.inv(fe.K), fe.force_vector))
+soluzione = fe.solve()
+
+print('\n')
+print('\n')
+print('\n')
+
+print(soluzione)
+
+print('\n')
+print('\n')
+print('\n')
+
+output_mesh = meshio.Mesh(mesh.points,mesh.cells,point_data={"u": [soluzione[0],soluzione[3],soluzione[6]]},)
+
+output_mesh.write("out.vtk",file_format="vtk")
