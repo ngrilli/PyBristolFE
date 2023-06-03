@@ -40,7 +40,7 @@ class FEProblem:
 			node2 = self.nodes[self.mesh.cells_dict['line'][elem][1]]
 			if (self.problem_type == 'Truss2D2'): # pin-jointed bar problem
 				self.elements.append(Truss2D2([node1,node2],self.material,self.beam_cross_section))
-			if (self.problem_type == 'Beam21'): # beam problem
+			elif (self.problem_type == 'Beam21'): # beam problem
 				self.elements.append(Beam21([node1,node2],self.material,self.beam_cross_section,self.moment_of_area))
 				
 	# would be better to sum over elements in case of mesh with different element types 
@@ -91,4 +91,4 @@ class FEProblem:
 			self.force_vector[matrix_line_to_modify] = self.BC.DirichletBC[i,2]
 
 	def solve(self):
-		return np.matmul(np.linalg.inv(self.K), self.force_vector)
+		self.u = np.matmul(np.linalg.inv(self.K), self.force_vector)

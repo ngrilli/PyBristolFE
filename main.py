@@ -15,6 +15,7 @@ from feproblem import FEProblem
 from material import Material
 from abaqusparser import AbaqusParser
 from boundaryconditions import BoundaryConditions
+from vtkwriter import VTKwriter
 import numpy as np
 
 from beam21 import Beam21
@@ -37,8 +38,6 @@ abaqus_input_file = AbaqusParser('Job-1.inp',bc)
 abaqus_input_file.ReadBC()
 
 fe.apply_BC()
-
-print(np.matrix(fe.K))
 
 print('\n')
 print('\n')
@@ -65,27 +64,13 @@ print('\n')
 print('\n')
 print('\n')
 
-print(bc.DirichletBC)
-print(bc.NeumannBC)
+fe.solve()
 
-print('\n')
-print('\n')
-print('\n')
+vtksol = VTKwriter('out.vtk',mesh,fe)
+vtksol.load_output_field()
+vtksol.write_output()
 
-print(fe.force_vector)
 
-soluzione = fe.solve()
+#output_mesh = meshio.Mesh(mesh.points,mesh.cells,point_data={"u": [soluzione[0],soluzione[3],soluzione[6]]},)
 
-print('\n')
-print('\n')
-print('\n')
-
-print(soluzione)
-
-print('\n')
-print('\n')
-print('\n')
-
-output_mesh = meshio.Mesh(mesh.points,mesh.cells,point_data={"u": [soluzione[0],soluzione[3],soluzione[6]]},)
-
-output_mesh.write("out.vtk",file_format="vtk")
+#output_mesh.write("out.vtk",file_format="vtk")
