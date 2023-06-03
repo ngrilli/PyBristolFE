@@ -6,6 +6,6 @@
 
 class Material:
 	
-	def __init__(self,young_modulus,poisson_ratio):
-		self.young_modulus = young_modulus
-		self.poisson_ratio = poisson_ratio
+	def __init__(self):
+		self.young_modulus = 0.0
+		self.poisson_ratio = 0.0

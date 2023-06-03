@@ -8,8 +8,9 @@ import numpy as np
 
 class AbaqusParser:
 	
-	def __init__(self,filename,BC):
+	def __init__(self,filename,material,BC):
 		self.filename = filename
+		self.material = material
 		self.BC = BC # boundary conditions object
 		
 	# parse boundary conditions
@@ -50,4 +51,28 @@ class AbaqusParser:
 		
 	# parse material properties
 	def ReadMaterial(self):
-		return 1
+		fid = open(self.filename,'r')
+		reading_Material_flag = False
+		reading_Material_type = False
+		for line in fid:
+			if (reading_Material_type):
+				data = line.split()
+				young_modulus = data[0]
+				young_modulus = young_modulus.rstrip(',')
+				young_modulus = float(young_modulus)
+				poisson_ratio = data[1]
+				poisson_ratio = poisson_ratio.rstrip(',')
+				poisson_ratio = float(poisson_ratio)
+				reading_Material_flag = False
+				reading_Material_type = False
+			if (reading_Material_flag):
+				if(line[0:8].casefold() == '*Elastic'.casefold()):
+					reading_Material_type = True
+				else:
+					print("Error: unknown material type parsed in input file")
+					exit()
+			if(line[0:9].casefold() == '*Material'.casefold()): # found *Material mode
+				reading_Material_flag = True
+		fid.close()
+		self.material.young_modulus = young_modulus
+		self.material.poisson_ratio = poisson_ratio
