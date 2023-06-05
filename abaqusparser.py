@@ -76,3 +76,22 @@ class AbaqusParser:
 		fid.close()
 		self.material.young_modulus = young_modulus
 		self.material.poisson_ratio = poisson_ratio
+
+	# parse element type
+	def ReadElementType(self):
+		fid = open(self.filename,'r')
+		for line in fid:
+			if (line[0:8].casefold() == '*Element'.casefold()):
+				data = line.split()
+				data = data[1]
+				data = data.lstrip('type=')
+				if (data == 'T2D2'):
+					problem_type = 'Truss2D2'
+				elif (data == 'B21'):
+					problem_type = 'Beam21'
+				else:
+					print("Error: unknown element type parsed in input file")
+					exit()
+				break
+		fid.close()
+		return problem_type

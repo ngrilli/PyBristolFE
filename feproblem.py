@@ -11,11 +11,11 @@ from beam21 import Beam21
 
 class FEProblem:
 	
-	def __init__(self,problem_type,mesh,material,BC,beam_cross_section=1,moment_of_area=1,dimensions=2):
-		self.problem_type = problem_type
+	def __init__(self,mesh,material,BC,abaqus_input_file,beam_cross_section=1,moment_of_area=1,dimensions=2):
 		self.mesh = mesh
 		self.material = material
 		self.BC = BC # boundary conditions object
+		self.abaqus_input_file = abaqus_input_file
 		self.beam_cross_section = beam_cross_section
 		self.moment_of_area = moment_of_area
 		self.dimensions = dimensions
@@ -29,6 +29,7 @@ class FEProblem:
 		
 	def find_element_type(self):
 		self.element_type = list(self.mesh.cells_dict.keys())[0]
+		self.problem_type = self.abaqus_input_file.ReadElementType()
 
 	def calculate_number_of_elements(self):
 		self.number_of_elements = len(self.mesh.cells_dict[self.element_type])
