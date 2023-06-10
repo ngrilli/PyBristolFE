@@ -10,11 +10,13 @@ import numpy as np
 
 class ConstantStrainTriangle(Element):
 	
-	def __init__(self,nodes):
+	def __init__(self,nodes,material):
 		super().__init__(3,2)
 		self.node1 = nodes[0]
 		self.node2 = nodes[1]
 		self.node3 = nodes[2]
+		self.young_modulus = material.young_modulus
+		self.poisson_ratio = material.poisson_ratio
 		self.calculate_area()
 		self.calculate_dshape_function()
 		

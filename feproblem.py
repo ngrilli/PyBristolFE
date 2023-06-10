@@ -56,6 +56,7 @@ class FEProblem:
 		for elem in self.elements:
 			Ke = elem.stiffness_matrix
 			Ke_dimensions = len(Ke)
+			# needs to be extended for an arbitrary number of nodes per elements
 			node1 = elem.node1
 			node2 = elem.node2
 			# find global matrix indices ii and jj for each element
