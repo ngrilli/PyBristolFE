@@ -36,4 +36,17 @@ class ConstantStrainTriangle(Element):
 	# calculate B matrix
 	def calculate_dshape_function(self):
 		self.B = np.zeros(shape=(self.number_of_nodes,self.number_of_nodes * self.dofs_per_node))
-		self.B[0,0] = 0
+		self.B[0,0] = self.y2 - self.y3
+		self.B[0,2] = self.y3 - self.y1
+		self.B[0,4] = self.y1 - self.y2
+		self.B[1,1] = self.x3 - self.x2
+		self.B[1,3] = self.x1 - self.x3
+		self.B[1,5] = self.x2 - self.x1
+		self.B[2,0] = self.x3 - self.x2
+		self.B[2,1] = self.y2 - self.y3
+		self.B[2,2] = self.x1 - self.x3
+		self.B[2,3] = self.y3 - self.y1
+		self.B[2,4] = self.x2 - self.x1
+		self.B[2,5] = self.y1 - self.y2
+		# divide by twice the area
+		self.B = self.B / (2.0 * self.area)
