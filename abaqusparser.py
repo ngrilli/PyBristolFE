@@ -89,6 +89,10 @@ class AbaqusParser:
 					problem_type = 'Truss2D2'
 				elif (data == 'B21'):
 					problem_type = 'Beam21'
+				elif (data == 'S3'):
+					problem_type = 'PlainStrainTriangle'
+				elif (data == 'CPS3'):
+					problem_type = 'PlainStressTriangle'
 				else:
 					print("Error: unknown element type parsed in input file")
 					exit()

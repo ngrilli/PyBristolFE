@@ -11,6 +11,8 @@ class PlainStrainTriangle(ConstantStrainTriangle):
 	
 	def __init__(self,nodes,material):
 		super().__init__(nodes,material)
+		self.calculate_D()
+		self.calculate_stiffness_matrix()
 
 	# calculate material stiffness matrix
 	def calculate_D(self):

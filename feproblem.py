@@ -33,16 +33,27 @@ class FEProblem:
 
 	def calculate_number_of_elements(self):
 		self.number_of_elements = len(self.mesh.cells_dict[self.element_type])
-		# How to get .inp element type with meshio?
 		self.elements = []
-		# create a list of element objects
+		# create a list of element objects (this part must be improved with cycles)
 		for elem in range(self.number_of_elements):
-			node1 = self.nodes[self.mesh.cells_dict['line'][elem][0]]
-			node2 = self.nodes[self.mesh.cells_dict['line'][elem][1]]
 			if (self.problem_type == 'Truss2D2'): # pin-jointed bar problem
+				node1 = self.nodes[self.mesh.cells_dict['line'][elem][0]]
+				node2 = self.nodes[self.mesh.cells_dict['line'][elem][1]]
 				self.elements.append(Truss2D2([node1,node2],self.material,self.beam_cross_section))
 			elif (self.problem_type == 'Beam21'): # beam problem
+				node1 = self.nodes[self.mesh.cells_dict['line'][elem][0]]
+				node2 = self.nodes[self.mesh.cells_dict['line'][elem][1]]
 				self.elements.append(Beam21([node1,node2],self.material,self.beam_cross_section,self.moment_of_area))
+			elif (self.problem_type == 'PlainStrainTriangle'): # plane strain triangle
+				node1 = self.nodes[self.mesh.cells_dict['triangle'][elem][0]]
+				node2 = self.nodes[self.mesh.cells_dict['triangle'][elem][1]]
+				node3 = self.nodes[self.mesh.cells_dict['triangle'][elem][2]]
+				self.elements.append(PlainStrainTriangle([node1,node2,node3],self.material))
+			elif (self.problem_type == 'PlainStressTriangle'): # plane stress triangle
+				node1 = self.nodes[self.mesh.cells_dict['triangle'][elem][0]]
+				node2 = self.nodes[self.mesh.cells_dict['triangle'][elem][1]]
+				node3 = self.nodes[self.mesh.cells_dict['triangle'][elem][2]]
+				self.elements.append(PlainStressTriangle([node1,node2,node3],self.material))
 				
 	# would be better to sum over elements in case of mesh with different element types 
 	def calculate_number_of_dofs_per_node(self):
@@ -55,7 +66,7 @@ class FEProblem:
 		self.K = np.zeros(shape=(K_dimensions,K_dimensions))
 		for elem in self.elements:
 			Ke = elem.stiffness_matrix
-			Ke_dimensions = len(Ke)
+			Ke_dimensions = len(Ke) # is this used?
 			# needs to be extended for an arbitrary number of nodes per elements
 			node1 = elem.node1
 			node2 = elem.node2
