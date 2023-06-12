@@ -31,7 +31,7 @@ class FEProblem:
 	def calculate_number_of_elements(self):
 		self.number_of_elements = len(self.mesh.cells_dict[self.element_type])
 		self.elements = []
-		# create a list of element objects (this part must be improved with cycles)
+		# create a list of element objects
 		for elem in range(self.number_of_elements):
 			nodes = [] # list of nodes of this element
 			if (self.problem_type == 'Truss2D2'): # pin-jointed bar problem
@@ -62,29 +62,17 @@ class FEProblem:
 		self.K = np.zeros(shape=(K_dimensions,K_dimensions))
 		for elem in self.elements:
 			Ke = elem.stiffness_matrix
-			Ke_dimensions = len(Ke) # is this used?
-			# needs to be extended for an arbitrary number of nodes per elements
-			node1 = elem.node1
-			node2 = elem.node2
-			# find global matrix indices ii and jj for each element
-			for i in range(elem.dofs_per_node):
-				for j in range(elem.dofs_per_node):
-					# (node1 , node1) submatrix
-					ii = node1.index * elem.dofs_per_node + i
-					jj = node1.index * elem.dofs_per_node + j
-					self.K[ii,jj] += Ke[i,j]
-					# (node1 , node2) submatrix
-					ii = node1.index * elem.dofs_per_node + i
-					jj = node2.index * elem.dofs_per_node + j
-					self.K[ii,jj] += Ke[i,j+elem.dofs_per_node]
-					# (node2 , node1) submatrix
-					ii = node2.index * elem.dofs_per_node + i
-					jj = node1.index * elem.dofs_per_node + j
-					self.K[ii,jj] += Ke[i+elem.dofs_per_node,j]
-					# (node2 , node2) submatrix
-					ii = node2.index * elem.dofs_per_node + i
-					jj = node2.index * elem.dofs_per_node + j
-					self.K[ii,jj] += Ke[i+elem.dofs_per_node,j+elem.dofs_per_node]
+			# cycle over pairs of nodes in this element and their degrees of freedom
+			for n1 in range(len(elem.nodes)):
+				for n2 in range(len(elem.nodes)):
+					for i in range(elem.dofs_per_node):
+						for j in range(elem.dofs_per_node):
+							# find global matrix indices ii and jj for this Ke entry
+							node1 = elem.nodes[n1]
+							node2 = elem.nodes[n2]
+							ii = node1.index * elem.dofs_per_node + i
+							jj = node2.index * elem.dofs_per_node + j
+							self.K[ii,jj] += Ke[i + n1 * elem.dofs_per_node, j + n2 * elem.dofs_per_node]
 
 	# apply boundary conditions
 	def apply_BC(self):

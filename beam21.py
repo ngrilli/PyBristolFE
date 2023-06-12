@@ -17,6 +17,7 @@ class Beam21(Element):
 	
 	def __init__(self,nodes,material):
 		super().__init__(2,3)
+		self.nodes = nodes
 		self.node1 = nodes[0]
 		self.node2 = nodes[1]
 		self.calculate_length()

@@ -18,6 +18,7 @@ class Truss2D2(Element):
 	
 	def __init__(self,nodes,material):
 		super().__init__(2,2)
+		self.nodes = nodes
 		self.node1 = nodes[0]
 		self.node2 = nodes[1]
 		self.calculate_length()
