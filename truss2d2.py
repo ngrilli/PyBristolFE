@@ -16,13 +16,13 @@ from material import Material
 
 class Truss2D2(Element):
 	
-	def __init__(self,nodes,material,cross_section):
+	def __init__(self,nodes,material):
 		super().__init__(2,2)
 		self.node1 = nodes[0]
 		self.node2 = nodes[1]
 		self.calculate_length()
 		self.young_modulus = material.young_modulus # Young's modulus
-		self.cross_section = cross_section # cross sectional area
+		self.beam_cross_section = material.beam_cross_section # cross sectional area
 		self.calculate_stiffness_matrix()
 		
 	def calculate_length(self):
@@ -45,7 +45,7 @@ class Truss2D2(Element):
                                           [ c*s,  s*s, -c*s, -s*s],
                                           [-c*c, -c*s,  c*c,  c*s],
                                           [-c*s, -s*s,  c*s,  s*s]])
-		self.stiffness_matrix *= (self.cross_section * self.young_modulus) / self.length
+		self.stiffness_matrix *= (self.beam_cross_section * self.young_modulus) / self.length
 
 
 

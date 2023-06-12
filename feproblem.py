@@ -11,14 +11,11 @@ from beam21 import Beam21
 
 class FEProblem:
 	
-	def __init__(self,mesh,material,BC,abaqus_input_file,beam_cross_section=1,moment_of_area=1,dimensions=2):
+	def __init__(self,mesh,material,BC,abaqus_input_file):
 		self.mesh = mesh
 		self.material = material
 		self.BC = BC # boundary conditions object
 		self.abaqus_input_file = abaqus_input_file
-		self.beam_cross_section = beam_cross_section
-		self.moment_of_area = moment_of_area
-		self.dimensions = dimensions
 		
 	def calculate_number_of_nodes(self):
 		self.number_of_nodes = self.mesh.points.__len__()
@@ -29,31 +26,30 @@ class FEProblem:
 		
 	def find_element_type(self):
 		self.element_type = list(self.mesh.cells_dict.keys())[0]
-		self.problem_type = self.abaqus_input_file.ReadElementType()
+		self.problem_type = self.abaqus_input_file.problem_type
 
 	def calculate_number_of_elements(self):
 		self.number_of_elements = len(self.mesh.cells_dict[self.element_type])
 		self.elements = []
 		# create a list of element objects (this part must be improved with cycles)
 		for elem in range(self.number_of_elements):
+			nodes = [] # list of nodes of this element
 			if (self.problem_type == 'Truss2D2'): # pin-jointed bar problem
-				node1 = self.nodes[self.mesh.cells_dict['line'][elem][0]]
-				node2 = self.nodes[self.mesh.cells_dict['line'][elem][1]]
-				self.elements.append(Truss2D2([node1,node2],self.material,self.beam_cross_section))
+				for i in range(2):
+					nodes.append(self.nodes[self.mesh.cells_dict['line'][elem][i]])
+				self.elements.append(Truss2D2(nodes,self.material))
 			elif (self.problem_type == 'Beam21'): # beam problem
-				node1 = self.nodes[self.mesh.cells_dict['line'][elem][0]]
-				node2 = self.nodes[self.mesh.cells_dict['line'][elem][1]]
-				self.elements.append(Beam21([node1,node2],self.material,self.beam_cross_section,self.moment_of_area))
+				for i in range(2):
+					nodes.append(self.nodes[self.mesh.cells_dict['line'][elem][i]])
+				self.elements.append(Beam21(nodes,self.material))
 			elif (self.problem_type == 'PlainStrainTriangle'): # plane strain triangle
-				node1 = self.nodes[self.mesh.cells_dict['triangle'][elem][0]]
-				node2 = self.nodes[self.mesh.cells_dict['triangle'][elem][1]]
-				node3 = self.nodes[self.mesh.cells_dict['triangle'][elem][2]]
-				self.elements.append(PlainStrainTriangle([node1,node2,node3],self.material))
+				for i in range(3):
+					nodes.append(self.nodes[self.mesh.cells_dict['triangle'][elem][i]])
+				self.elements.append(PlainStrainTriangle(nodes,self.material))
 			elif (self.problem_type == 'PlainStressTriangle'): # plane stress triangle
-				node1 = self.nodes[self.mesh.cells_dict['triangle'][elem][0]]
-				node2 = self.nodes[self.mesh.cells_dict['triangle'][elem][1]]
-				node3 = self.nodes[self.mesh.cells_dict['triangle'][elem][2]]
-				self.elements.append(PlainStressTriangle([node1,node2,node3],self.material))
+				for i in range(3):
+					nodes.append(self.nodes[self.mesh.cells_dict['triangle'][elem][i]])
+				self.elements.append(PlainStressTriangle(nodes,self.material))
 				
 	# would be better to sum over elements in case of mesh with different element types 
 	def calculate_number_of_dofs_per_node(self):

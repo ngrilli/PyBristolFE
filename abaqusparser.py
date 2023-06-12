@@ -54,6 +54,7 @@ class AbaqusParser:
 		fid = open(self.filename,'r')
 		reading_Material_flag = False
 		reading_Material_type = False
+		reading_Beam_Section_flag = False
 		for line in fid:
 			if (reading_Material_type):
 				data = line.split()
@@ -71,11 +72,24 @@ class AbaqusParser:
 				else:
 					print("Error: unknown material type parsed in input file")
 					exit()
-			if(line[0:9].casefold() == '*Material'.casefold()): # found *Material mode
+			if (reading_Beam_Section_flag):
+				data = line.split()
+				beam_cross_section = data[0]
+				beam_cross_section = beam_cross_section.rstrip(',')
+				beam_cross_section = float(beam_cross_section)
+				moment_of_area = data[1]
+				moment_of_area = moment_of_area.rstrip(',')
+				moment_of_area = float(moment_of_area)
+				reading_Beam_Section_flag = False
+			if (line[0:9].casefold() == '*Material'.casefold()): # found *Material mode
 				reading_Material_flag = True
+			if (line[0:13].casefold() == '*BEAM SECTION'.casefold()): # found beam section mode
+				reading_Beam_Section_flag = True
 		fid.close()
 		self.material.young_modulus = young_modulus
 		self.material.poisson_ratio = poisson_ratio
+		self.material.beam_cross_section = beam_cross_section
+		self.material.moment_of_area = moment_of_area
 
 	# parse element type
 	def ReadElementType(self):
@@ -98,4 +112,4 @@ class AbaqusParser:
 					exit()
 				break
 		fid.close()
-		return problem_type
+		self.problem_type = problem_type

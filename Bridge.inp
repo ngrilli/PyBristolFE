@@ -32,9 +32,11 @@
 18,   4,   8
 19,   3,   7
 20,   4,  10
-*Material, NAME=STEEL,
+*Material, NAME=STEEL
 *Elastic
 210e9, 0.3
+*Beam Section
+1., 1.
 *Boundary, type=Displacement
  1,   1,   0.0
  1,   2,   0.0

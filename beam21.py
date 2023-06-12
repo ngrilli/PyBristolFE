@@ -10,19 +10,19 @@
 
 import numpy as np
 from element import Element
-from node2d import Node2D
-from material import Material
+#from node2d import Node2D
+#from material import Material
 
 class Beam21(Element):
 	
-	def __init__(self,nodes,material,cross_section,moment_of_area):
+	def __init__(self,nodes,material):
 		super().__init__(2,3)
 		self.node1 = nodes[0]
 		self.node2 = nodes[1]
 		self.calculate_length()
 		self.young_modulus = material.young_modulus # Young's modulus
-		self.cross_section = cross_section # cross sectional area
-		self.moment_of_area = moment_of_area # second moment of area
+		self.beam_cross_section = material.beam_cross_section # beam cross sectional area
+		self.moment_of_area = material.moment_of_area # second moment of area
 		self.calculate_stiffness_matrix()
 		
 	def calculate_length(self):
@@ -45,7 +45,7 @@ class Beam21(Element):
 		c = (self.node2.x - self.node1.x) / self.length
 		s = (self.node2.y - self.node1.y) / self.length
 		L = self.length
-		self.stiffness_matrix = ((self.cross_section * self.young_modulus) / L) * \
+		self.stiffness_matrix = ((self.beam_cross_section * self.young_modulus) / L) * \
 								np.array([[ c*c, c*s,   0, -c*c, -c*s,  0 ],
                                           [ c*s, s*s,   0, -c*s, -s*s,  0 ],
                                           [   0,   0,   0,    0,   0,   0 ],
