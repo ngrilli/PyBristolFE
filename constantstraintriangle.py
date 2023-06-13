@@ -29,9 +29,6 @@ class ConstantStrainTriangle(Element):
 		self.y1 = self.node1.coords[1]
 		self.y2 = self.node2.coords[1]
 		self.y3 = self.node3.coords[1]
-		self.z1 = self.node1.coords[2]
-		self.z2 = self.node2.coords[2]
-		self.z3 = self.node3.coords[2]
 		self.area = 0.5 * (self.x2 * self.y3 - self.x3 * self.y2 + \
 		                   self.x3 * self.y1 - self.x1 * self.y3 + \
 		                   self.x1 * self.y2 - self.x2 * self.y1)

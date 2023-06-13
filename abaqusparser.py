@@ -55,6 +55,9 @@ class AbaqusParser:
 		reading_Material_flag = False
 		reading_Material_type = False
 		reading_Beam_Section_flag = False
+		# initialize quantities that are not necessary for triangle elements
+		beam_cross_section = 0.0
+		moment_of_area = 0.0
 		for line in fid:
 			if (reading_Material_type):
 				data = line.split()
@@ -104,9 +107,9 @@ class AbaqusParser:
 				elif (data == 'B21'):
 					problem_type = 'Beam21'
 				elif (data == 'S3'):
-					problem_type = 'PlainStrainTriangle'
+					problem_type = 'PlaneStrainTriangle'
 				elif (data == 'CPS3'):
-					problem_type = 'PlainStressTriangle'
+					problem_type = 'PlaneStressTriangle'
 				else:
 					print("Error: unknown element type parsed in input file")
 					exit()

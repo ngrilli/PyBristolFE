@@ -6,8 +6,9 @@
 # Notation CPS3 used in Abaqus
 
 import numpy as np
+from constantstraintriangle import ConstantStrainTriangle
 
-class PlainStressTriangle(ConstantStrainTriangle):
+class PlaneStressTriangle(ConstantStrainTriangle):
 	
 	def __init__(self,nodes,material):
 		super().__init__(nodes,material)

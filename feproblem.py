@@ -8,6 +8,8 @@ import numpy as np
 from node2d import Node2D
 from truss2d2 import Truss2D2
 from beam21 import Beam21
+from planestresstriangle import PlaneStressTriangle
+from planestraintriangle import PlaneStrainTriangle
 
 class FEProblem:
 	
@@ -42,14 +44,14 @@ class FEProblem:
 				for i in range(2):
 					nodes.append(self.nodes[self.mesh.cells_dict['line'][elem][i]])
 				self.elements.append(Beam21(nodes,self.material))
-			elif (self.problem_type == 'PlainStrainTriangle'): # plane strain triangle
+			elif (self.problem_type == 'PlaneStrainTriangle'): # plane strain triangle
 				for i in range(3):
 					nodes.append(self.nodes[self.mesh.cells_dict['triangle'][elem][i]])
-				self.elements.append(PlainStrainTriangle(nodes,self.material))
-			elif (self.problem_type == 'PlainStressTriangle'): # plane stress triangle
+				self.elements.append(PlaneStrainTriangle(nodes,self.material))
+			elif (self.problem_type == 'PlaneStressTriangle'): # plane stress triangle
 				for i in range(3):
 					nodes.append(self.nodes[self.mesh.cells_dict['triangle'][elem][i]])
-				self.elements.append(PlainStressTriangle(nodes,self.material))
+				self.elements.append(PlaneStressTriangle(nodes,self.material))
 				
 	# would be better to sum over elements in case of mesh with different element types 
 	def calculate_number_of_dofs_per_node(self):
