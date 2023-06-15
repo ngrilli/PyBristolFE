@@ -5,6 +5,7 @@
 # VTK file writer class
 
 import meshio
+import numpy as np
 
 class VTKwriter:
 	
@@ -26,7 +27,9 @@ class VTKwriter:
 				solution_dict['uy'] = solution_array
 			elif (dof == 2):
 				solution_dict['utheta'] = solution_array
-		self.output_mesh = meshio.Mesh(self.mesh.points,self.mesh.cells,point_data=solution_dict,)
+		# convert to 3D points to avoid VTK warning
+		points3D = np.column_stack([self.mesh.points[:,0], self.mesh.points[:,1], np.zeros(self.mesh.points.shape[0])])
+		self.output_mesh = meshio.Mesh(points3D,self.mesh.cells,point_data=solution_dict,)
 
 	def write_output(self):
 		self.output_mesh.write(self.filename,file_format="vtk")
