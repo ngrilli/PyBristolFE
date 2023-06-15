@@ -4,10 +4,6 @@
 
 # A teaching FE code for linear elasticity
 
-# Requirements: python 3
-# pip install meshio
-# pip install netCDF4
-
 import sys
 import meshio
 from node2d import Node2D

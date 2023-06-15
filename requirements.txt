@@ -1,0 +1,5 @@
+###### Requirements without Version Specifiers ######
+######           Python 3 is required          ######
+numpy
+meshio
+netCDF4
