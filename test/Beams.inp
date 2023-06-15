@@ -1,4 +1,4 @@
-** Example of 2D pin-jointed bar elements Abaqus mesh
+** Example of 2D beam elements Abaqus mesh
 **
 *Node
       1,           0.,           0.
