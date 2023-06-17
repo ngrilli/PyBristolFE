@@ -38,6 +38,7 @@ fe.calculate_number_of_dofs_per_node()
 fe.calculate_global_stiffness_matrix()
 fe.apply_BC()
 fe.solve()
+fe.calculate_strain()
 
 output_file_name = input_file_name.rstrip('.inp')
 output_file_name += '.vtk'

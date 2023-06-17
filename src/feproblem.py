@@ -91,3 +91,24 @@ class FEProblem:
 
 	def solve(self):
 		self.u = np.matmul(np.linalg.inv(self.K), self.force_vector)
+
+	# calculate strain for triangle elements
+	def calculate_strain(self):
+		self.Exx = []
+		self.Eyy = []
+		self.Exy = []
+		if (self.problem_type == 'PlaneStrainTriangle' or self.problem_type == 'PlaneStressTriangle'):
+			for elem in self.elements:
+				u_elem_index = 0 # index of displacement solution in this element
+				u_elem = np.zeros(shape=(elem.number_of_nodes * elem.dofs_per_node))
+				for n in range(elem.number_of_nodes):
+					node = elem.nodes[n]
+					for i in range(elem.dofs_per_node):
+						ii = node.index * elem.dofs_per_node + i
+						# displacement solution in this elements
+						u_elem[u_elem_index] = self.u[ii]
+						u_elem_index += 1
+				strain_elem = np.matmul(elem.B, u_elem) # strain vector in this element
+				self.Exx.append(strain_elem[0])
+				self.Eyy.append(strain_elem[1])
+				self.Exy.append(strain_elem[2])

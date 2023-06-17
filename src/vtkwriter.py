@@ -16,20 +16,25 @@ class VTKwriter:
 		
 	# create output mesh with displacement nodal field
 	def load_output_field(self):
-		solution_dict = {} # solution dictionary for output
+		point_solution_dict = {} # solution dictionary for point output
 		for dof in range(self.feproblem.dofs_per_node):
-			solution_array = []
+			point_solution_array = []
 			for node in range(self.feproblem.number_of_nodes):
-				solution_array.append(self.feproblem.u[node*self.feproblem.dofs_per_node + dof])
+				point_solution_array.append(self.feproblem.u[node*self.feproblem.dofs_per_node + dof])
 			if (dof == 0):
-				solution_dict['ux'] = solution_array
+				point_solution_dict['ux'] = point_solution_array
 			elif (dof == 1):
-				solution_dict['uy'] = solution_array
+				point_solution_dict['uy'] = point_solution_array
 			elif (dof == 2):
-				solution_dict['utheta'] = solution_array
+				point_solution_dict['utheta'] = point_solution_array
+		cell_solution_dict = {} # solution dictionary for cell output
+		# an additional square bracket is needed because meshio uses it to separate different element types
+		cell_solution_dict['Exx'] = [self.feproblem.Exx]
+		cell_solution_dict['Eyy'] = [self.feproblem.Eyy]
+		cell_solution_dict['Exy'] = [self.feproblem.Exy]
 		# convert to 3D points to avoid VTK warning
 		points3D = np.column_stack([self.mesh.points[:,0], self.mesh.points[:,1], np.zeros(self.mesh.points.shape[0])])
-		self.output_mesh = meshio.Mesh(points3D,self.mesh.cells,point_data=solution_dict,)
+		self.output_mesh = meshio.Mesh(points3D,self.mesh.cells,point_data=point_solution_dict,cell_data=cell_solution_dict)
 
 	def write_output(self):
 		self.output_mesh.write(self.filename,file_format="vtk")
