@@ -6,6 +6,7 @@
 
 class Element:
 	
-	def __init__(self,number_of_nodes,dofs_per_node):
+	def __init__(self,index,number_of_nodes,dofs_per_node):
+		self.index = index
 		self.number_of_nodes = number_of_nodes
 		self.dofs_per_node = dofs_per_node

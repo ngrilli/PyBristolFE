@@ -10,8 +10,8 @@ import numpy as np
 
 class ConstantStrainTriangle(Element):
 	
-	def __init__(self,nodes,material):
-		super().__init__(3,2)
+	def __init__(self,index,nodes,material):
+		super().__init__(index,3,2)
 		self.nodes = nodes
 		self.node1 = nodes[0]
 		self.node2 = nodes[1]

@@ -39,19 +39,19 @@ class FEProblem:
 			if (self.problem_type == 'Truss2D2'): # pin-jointed bar problem
 				for i in range(2):
 					nodes.append(self.nodes[self.mesh.cells_dict['line'][elem][i]])
-				self.elements.append(Truss2D2(nodes,self.material))
+				self.elements.append(Truss2D2(elem,nodes,self.material))
 			elif (self.problem_type == 'Beam21'): # beam problem
 				for i in range(2):
 					nodes.append(self.nodes[self.mesh.cells_dict['line'][elem][i]])
-				self.elements.append(Beam21(nodes,self.material))
+				self.elements.append(Beam21(elem,nodes,self.material))
 			elif (self.problem_type == 'PlaneStrainTriangle'): # plane strain triangle
 				for i in range(3):
 					nodes.append(self.nodes[self.mesh.cells_dict['triangle'][elem][i]])
-				self.elements.append(PlaneStrainTriangle(nodes,self.material))
+				self.elements.append(PlaneStrainTriangle(elem,nodes,self.material))
 			elif (self.problem_type == 'PlaneStressTriangle'): # plane stress triangle
 				for i in range(3):
 					nodes.append(self.nodes[self.mesh.cells_dict['triangle'][elem][i]])
-				self.elements.append(PlaneStressTriangle(nodes,self.material))
+				self.elements.append(PlaneStressTriangle(elem,nodes,self.material))
 				
 	# would be better to sum over elements in case of mesh with different element types 
 	def calculate_number_of_dofs_per_node(self):
@@ -112,3 +112,17 @@ class FEProblem:
 				self.Exx.append(strain_elem[0])
 				self.Eyy.append(strain_elem[1])
 				self.Exy.append(strain_elem[2])
+				
+	# calculate stress for triangle elements
+	def calculate_stress(self):
+		self.Sxx = []
+		self.Syy = []
+		self.Sxy = []
+		if (self.problem_type == 'PlaneStrainTriangle' or self.problem_type == 'PlaneStressTriangle'):
+			for elem in self.elements:
+				strain_elem = np.array([self.Exx[elem.index], self.Eyy[elem.index], self.Exy[elem.index]])
+				stress_elem = np.matmul(elem.D, strain_elem)
+				self.Sxx.append(stress_elem[0])
+				self.Syy.append(stress_elem[1])
+				self.Sxy.append(stress_elem[2])
+		

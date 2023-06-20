@@ -16,8 +16,8 @@ from material import Material
 
 class Truss2D2(Element):
 	
-	def __init__(self,nodes,material):
-		super().__init__(2,2)
+	def __init__(self,index,nodes,material):
+		super().__init__(index,2,2)
 		self.nodes = nodes
 		self.node1 = nodes[0]
 		self.node2 = nodes[1]

@@ -32,6 +32,9 @@ class VTKwriter:
 		cell_solution_dict['Exx'] = [self.feproblem.Exx]
 		cell_solution_dict['Eyy'] = [self.feproblem.Eyy]
 		cell_solution_dict['Exy'] = [self.feproblem.Exy]
+		cell_solution_dict['Sxx'] = [self.feproblem.Sxx]
+		cell_solution_dict['Syy'] = [self.feproblem.Syy]
+		cell_solution_dict['Sxy'] = [self.feproblem.Sxy]
 		# convert to 3D points to avoid VTK warning
 		points3D = np.column_stack([self.mesh.points[:,0], self.mesh.points[:,1], np.zeros(self.mesh.points.shape[0])])
 		self.output_mesh = meshio.Mesh(points3D,self.mesh.cells,point_data=point_solution_dict,cell_data=cell_solution_dict)

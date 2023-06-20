@@ -39,6 +39,7 @@ fe.calculate_global_stiffness_matrix()
 fe.apply_BC()
 fe.solve()
 fe.calculate_strain()
+fe.calculate_stress()
 
 output_file_name = input_file_name.rstrip('.inp')
 output_file_name += '.vtk'

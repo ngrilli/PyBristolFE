@@ -10,8 +10,8 @@ from constantstraintriangle import ConstantStrainTriangle
 
 class PlaneStrainTriangle(ConstantStrainTriangle):
 	
-	def __init__(self,nodes,material):
-		super().__init__(nodes,material)
+	def __init__(self,index,nodes,material):
+		super().__init__(index,nodes,material)
 		self.calculate_D()
 		self.calculate_stiffness_matrix()
 
