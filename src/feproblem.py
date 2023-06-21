@@ -97,6 +97,7 @@ class FEProblem:
 		self.Exx = []
 		self.Eyy = []
 		self.Exy = []
+		self.Ezz = []
 		if (self.problem_type == 'PlaneStrainTriangle' or self.problem_type == 'PlaneStressTriangle'):
 			for elem in self.elements:
 				u_elem_index = 0 # index of displacement solution in this element
@@ -112,12 +113,18 @@ class FEProblem:
 				self.Exx.append(strain_elem[0])
 				self.Eyy.append(strain_elem[1])
 				self.Exy.append(strain_elem[2])
+				if (self.problem_type == 'PlaneStrainTriangle'):
+					self.Ezz.append(0.0)
+				if (self.problem_type == 'PlaneStressTriangle'):
+					nu = self.material.poisson_ratio
+					self.Ezz.append(-nu / (1.0 - nu) * (strain_elem[0] + strain_elem[1]))
 				
 	# calculate stress for triangle elements
 	def calculate_stress(self):
 		self.Sxx = []
 		self.Syy = []
 		self.Sxy = []
+		self.Szz = []
 		if (self.problem_type == 'PlaneStrainTriangle' or self.problem_type == 'PlaneStressTriangle'):
 			for elem in self.elements:
 				strain_elem = np.array([self.Exx[elem.index], self.Eyy[elem.index], self.Exy[elem.index]])
@@ -125,4 +132,10 @@ class FEProblem:
 				self.Sxx.append(stress_elem[0])
 				self.Syy.append(stress_elem[1])
 				self.Sxy.append(stress_elem[2])
+				if (self.problem_type == 'PlaneStressTriangle'):
+					self.Szz.append(0.0)
+				if (self.problem_type == 'PlaneStrainTriangle'):
+					E = self.material.young_modulus
+					nu = self.material.poisson_ratio
+					self.Szz.append(E * nu / (1.0 + nu) / (1.0 - 2.0 * nu) * (strain_elem[0] + strain_elem[1]))
 		
