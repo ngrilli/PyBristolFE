@@ -19,14 +19,19 @@ class VTKwriter:
 		point_solution_dict = {} # solution dictionary for point output
 		for dof in range(self.feproblem.dofs_per_node):
 			point_solution_array = []
+			point_force_array = []
 			for node in range(self.feproblem.number_of_nodes):
 				point_solution_array.append(self.feproblem.u[node*self.feproblem.dofs_per_node + dof])
+				point_force_array.append(self.feproblem.force_vector_output[node*self.feproblem.dofs_per_node + dof])
 			if (dof == 0):
 				point_solution_dict['ux'] = point_solution_array
+				point_solution_dict['Fx'] = point_force_array
 			elif (dof == 1):
 				point_solution_dict['uy'] = point_solution_array
+				point_solution_dict['Fy'] = point_force_array
 			elif (dof == 2):
 				point_solution_dict['utheta'] = point_solution_array
+				point_solution_dict['Mtheta'] = point_force_array
 		cell_solution_dict = {} # solution dictionary for cell output
 		# an additional square bracket is needed because meshio uses it to separate different element types
 		cell_solution_dict['Exx'] = [self.feproblem.Exx]
@@ -39,7 +44,10 @@ class VTKwriter:
 		cell_solution_dict['Szz'] = [self.feproblem.Szz]
 		# convert to 3D points to avoid VTK warning
 		points3D = np.column_stack([self.mesh.points[:,0], self.mesh.points[:,1], np.zeros(self.mesh.points.shape[0])])
-		self.output_mesh = meshio.Mesh(points3D,self.mesh.cells,point_data=point_solution_dict,cell_data=cell_solution_dict)
+		if (self.feproblem.problem_type == 'PlaneStrainTriangle' or self.feproblem.problem_type == 'PlaneStressTriangle'):
+			self.output_mesh = meshio.Mesh(points3D,self.mesh.cells,point_data=point_solution_dict,cell_data=cell_solution_dict)
+		else: # no cell data for beam or truss elements
+			self.output_mesh = meshio.Mesh(points3D,self.mesh.cells,point_data=point_solution_dict)
 
 	def write_output(self):
 		self.output_mesh.write(self.filename,file_format="vtk")

@@ -82,6 +82,8 @@ class FEProblem:
 		self.force_vector = np.zeros(shape=(self.dofs_per_node * self.number_of_nodes))
 		for i in range(self.BC.NeumannBC.shape[0]): # cycle over Neumann BC
 			self.force_vector[int(self.BC.NeumannBC[i,0] * self.dofs_per_node + self.BC.NeumannBC[i,1])] = self.BC.NeumannBC[i,2] 
+		# store original global stiffness matrix for force output
+		self.K_original = np.copy(self.K)
 		# Dirichlet BC: modify global stiffness matrix
 		for i in range(self.BC.DirichletBC.shape[0]): # cycle over Dirichlet BC
 			matrix_line_to_modify = int(self.BC.DirichletBC[i,0] * self.dofs_per_node + self.BC.DirichletBC[i,1])
@@ -91,6 +93,7 @@ class FEProblem:
 
 	def solve(self):
 		self.u = np.matmul(np.linalg.inv(self.K), self.force_vector)
+		self.force_vector_output = np.matmul(self.K_original, self.u)
 
 	# calculate strain for triangle elements
 	def calculate_strain(self):
